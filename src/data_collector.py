@@ -9,12 +9,9 @@ import time
 import datetime
 import csv
 
-from collections import OrderedDict
-from utils import create_delta, print_progress_bar
+from utils import print_progress_bar
 
 HAND_MOTIONS = {0: 'open_palm', 1: 'closed_fist'}  # Will be added to
-
-
 
 def connect_arduino(port_str='/dev/ttyACM0', baud_rate=9600):
     """
@@ -44,7 +41,7 @@ def collect_data(data_path, hand_motion, arduino, duration=60, write_time=45):
     """
     print("Initializing Data Collection - Output File:{}".format(data_path))
     time.sleep(5)
-    print("Data collection started!")
+    print("Data collection started!'\nDuration - {}".format(duration))
     headers = ["Sensor" + str(num) for num in range(5)]
     rows = [ headers ]
     start_time = datetime.datetime.now()
