@@ -25,6 +25,15 @@ def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '
     if curr_time >= stop_time:
         print()
 
+def path_exists(path):
+    """
+    Returns True if path exists
+
+    @params:
+        path(str) - Required: File/Directory path
+    """
+    return os.path.exists(path)
+
 def create_directory(prefix, suffix):
     """
     Creates a directory with the name prefix-suffix.
@@ -34,5 +43,5 @@ def create_directory(prefix, suffix):
         prefix (str) - Required : First half of the name
         suffix (str) - Required : Second half of the name
     """
-    if not os.path.exists('./{}-{}'.format(prefix, suffix)):
+    if not path_exists('./{}-{}'.format(prefix, suffix)):
         os.makedirs('./{}-{}'.format(prefix, suffix))
