@@ -1,4 +1,5 @@
 import datetime
+import os
 
 def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
@@ -23,3 +24,15 @@ def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '
     # Print New Line on Complete
     if curr_time >= stop_time:
         print()
+
+def create_directory(prefix, suffix):
+    """
+    Creates a directory with the name prefix-suffix.
+    Does nothing if it already exists.
+
+    @params:
+        prefix (str) - Required : First half of the name
+        suffix (str) - Required : Second half of the name
+    """
+    if not os.path.exists('./{}-{}'.format(prefix, suffix)):
+        os.makedirs('./{}-{}'.format(prefix, suffix))

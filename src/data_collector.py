@@ -9,7 +9,7 @@ import time
 import datetime
 import csv
 
-from utils import print_progress_bar
+from utils import print_progress_bar, create_directory
 
 HAND_MOTIONS = {0: 'open_palm', 1: 'closed_fist'}  # Will be added to
 
@@ -24,7 +24,7 @@ def connect_arduino(port_str='/dev/ttyACM0', baud_rate=9600):
     """
     arduino = serial.Serial(port_str, baud_rate)
     time.sleep(1)
-    print("Serial Port is open: {}".format(arduino.is_open))
+    print("Serial Port Open?: {}".format(arduino.is_open))
     return arduino
 
 def collect_data(data_path, hand_motion, arduino, duration=60, write_time=45):
@@ -58,6 +58,7 @@ def collect_data(data_path, hand_motion, arduino, duration=60, write_time=45):
         if datetime.datetime.now() >= end_time:
             break
     print("Preparing file for write operation...")
+
     with open(data_path, 'a+', newline='') as f:
         time.sleep(5)  # This is here to be safe
         print("Waiting {} seconds for operation to complete...".format(write_time))
@@ -69,8 +70,10 @@ def collect_data(data_path, hand_motion, arduino, duration=60, write_time=45):
 def begin(arduino):
     """
     Begins the data collection pipeline.
-    """
 
+    @params:
+        arduino (PySerial Obj) - Required : Object that reads from serial port
+    """
     while True:
         try:
             subject_num = int(input("What is the subject number?\n" ))
@@ -100,7 +103,9 @@ def begin(arduino):
         except ValueError:
             print("Trial number is not an integer. Please try again...")
 
-    # './data/subject-num/motion-hand_motion/trial-trial_num.csv'
+    # Creates directories if they don't exist, else does nothing
+    create_directory("subject", trial_num)
+    create_directory("motion", HAND_MOTIONS[motion_num])
     data_path = './data/subject-{}/motion-{}/trial-{}.csv'\
         .format(subject_num, HAND_MOTIONS[motion_num], trial_num)
 
