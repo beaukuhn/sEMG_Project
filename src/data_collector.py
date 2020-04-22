@@ -9,7 +9,7 @@ import time
 import datetime
 import csv
 
-from utils import print_progress_bar, create_directory, path_exists
+from utils import print_progress_bar, create_dirs, path_exists
 
 HAND_MOTIONS = {0: 'open_palm', 1: 'closed_fist'}  # Will be added to
 
@@ -29,7 +29,7 @@ def connect_arduino(port_str='/dev/ttyACM0', baud_rate=9600):
 
 def terminate_process(arduino):
     """
-    Terminates program.
+    Closes serial port, effectively ending process.
 
     @params:
         arduino(PySerial Obj) - Required: Reads from serial port
@@ -78,6 +78,7 @@ def collect_data(data_path, hand_motion, arduino, duration=60, write_time=45):
     # Data Writing
     print("Preparing file for write operation...")
     with open(data_path, 'a+', newline='') as f:
+        print(data_path)
         time.sleep(5)  # This is here to be safe
         print("Waiting {} seconds for operation to complete...".format(write_time))
         writer = csv.writer(f)
@@ -119,16 +120,12 @@ def begin(arduino):
         except ValueError:
             print("Trial number is not an integer. Please try again...")
 
-    # Creates directories if they don't exist, else does nothing
-    create_directory("subject", trial_num)
-    create_directory("motion", HAND_MOTIONS[motion_num])
-
+    # Creates directories if they don't exist, but return path regardless
+    data_path = create_dirs(subject_num, HAND_MOTIONS[motion_num], trial_num)
     # If trial data already exists, ask if you wish to proceed.
-    data_path = './data/subject-{}/motion-{}/trial-{}.csv'\
-        .format(subject_num, HAND_MOTIONS[motion_num], trial_num)
     if path_exists(data_path):
         ans = input("{} already exists. Continue? [Y/n]\n".format(data_path))
-        if ans == 'n':
+        if ans != 'y':
             terminate_process(arduino)
             return
 
@@ -137,7 +134,6 @@ def begin(arduino):
             \n Press any key when you're ready to begin.\n"
             .format(HAND_MOTIONS[motion_num])
     )
-
     collect_data(data_path, HAND_MOTIONS[motion_num], arduino)
 
 def main():
@@ -145,7 +141,7 @@ def main():
     while True:
         begin(arduino)
         ans = input("New trial? [y/N]\n")
-        if ans == 'n':
+        if ans != 'y':
             terminate_process(arduino)
             break
 

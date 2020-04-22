@@ -34,14 +34,21 @@ def path_exists(path):
     """
     return os.path.exists(path)
 
-def create_directory(prefix, suffix):
+def create_dirs(subject_suffix, motion_suffix, trial_suffix):
     """
-    Creates a directory with the name prefix-suffix.
+    Creates subject and motion directories
     Does nothing if it already exists.
 
     @params:
-        prefix (str) - Required : First half of the name
-        suffix (str) - Required : Second half of the name
+        subject_suffix(str) - Required : End portion of directory name
+        motion_suffix(str) - Required : End portion of motion directory name
+        trial_suffix(str) - Required : End portion of CSV file
     """
-    if not path_exists('./{}-{}'.format(prefix, suffix)):
-        os.makedirs('./{}-{}'.format(prefix, suffix))
+    base = './data/'
+    path = base + 'subject-{}'.format(subject_suffix)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    path += '/motion-{}'.format(motion_suffix)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path + '/trial-{}.csv'.format(trial_suffix)
