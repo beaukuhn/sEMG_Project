@@ -12,9 +12,7 @@ void setup() {
 void loop() {
   // Store the incoming voltage from each pin [int is 2 bytes (16 bits)]
   for (int pin = 0; pin < 5 ; pin++) {
-    int val = analogRead(analogPins[0]);
-    byteArray[1] = highByte(val);
-    byteArray[0] = lowByte(val);
+    int val = analogRead(analogPins[pin]);
     Serial.println(val);
     delay(.1);  // This is fickle
     Serial.flush();

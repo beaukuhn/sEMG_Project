@@ -1,6 +1,8 @@
 import datetime
 import os
 
+
+
 def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
     Call in a loop to create terminal progress bar
@@ -20,7 +22,7 @@ def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '
     percent = ("{0:." + str(decimals) + "f}").format(100 * (elapsed_time / process_time))
     filledLength = int(length * elapsed_time // process_time)
     bar = fill * filledLength + '-' * (length - filledLength)
-    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = printEnd)
+    print('\r%s |%s| %s%% %s\n' % (prefix, bar, percent, suffix), end = printEnd)
     # Print New Line on Complete
     if curr_time >= stop_time:
         print()

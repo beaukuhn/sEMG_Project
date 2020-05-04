@@ -11,8 +11,8 @@ import csv
 from utils import print_progress_bar, create_dirs, path_exists
 
 RECORDING_DURATION = 60
-WRITING_DURATION = 45
-HAND_MOTIONS = {0: 'open_palm', 1: 'closed_fist'}  # Will be added to
+WRITING_DURATION = 30
+HAND_MOTIONS = {1: "thumb", 2: "index", 3: "middle", 4: "ring+pinky", 5:"pinky", 6: "open-palm", 7: "fist"}  # Will be added to
 BAUD_RATE = 9600
 PORT = '/dev/ttyACM0'
 
@@ -45,7 +45,7 @@ def prompt_dispatcher(function_key):
     def gather_parameters(key):
         subject_query = "What is the subject number?\n"
         motion_query = ("Which hand motion would like to collect data for?\n" +
-                        "0: open-palm, 1: closed-fist\n")
+                        "1: thumb, 2: index, 3: middle, 4: ring+pinky, 5:pinky, 6: open-palm, 7: fist\n")
         trial_query = "What is the trial number?\n"
         key2query = {
             "What is the subject number?": subject_query,
@@ -68,7 +68,7 @@ def prompt_dispatcher(function_key):
             ans = input("{} already exists. Continue? [Y/n]\n".format(data_path))
             if ans not in ['y', 'Y']:
                 return close_connection(arduino)
-            return True
+        return True
 
     def start_new_trial():
         ans = input("Start trial? [y/N]\n")
@@ -112,16 +112,27 @@ def collect_data(data_path, hand_motion):
     #######################################
     print("Data collection started!\nDuration - {} seconds".format(RECORDING_DURATION))
     time.sleep(5)
+    arduino.timeout=.01
+    read_bytes = b''
+    arduino.flushInput()
+
     while datetime.datetime.now() < end_time:
         curr_row = []
-        for sensor_num in range(5):
-            read_bytes = arduino.read(size=2)
-            val = int.from_bytes(read_bytes, 'little', signed=True)
-            time.sleep(.5)
-            curr_row.append(val)
+        read_bytes += arduino.read(10000)
         print_progress_bar(datetime.datetime.now(), start_time, end_time, length=50)
-        rows.append(curr_row)
 
+    d =[int(x) for x in read_bytes.split()]
+    N = len(d)
+    # sensor2data = {i : [] for i in range(NUM_SENSORS)}
+    curr_row = []
+    for i in range(len(d)):
+        # sensor2data[i].append(val)
+        if i % 5 == 0:
+            rows.append(curr_row)
+            curr_row = []
+        curr_row.append(d[i])
+
+    print(d, len(d))
     ######################################
     #----------- Data Writing -----------#
     ######################################
@@ -153,6 +164,7 @@ def initialize_pipeline():
 
     # If trial data already exists, ask if you wish to proceed.
     if not prompt_dispatcher("Is this a valid path?")(data_path):
+
         return
 
     # Prime for data collection
