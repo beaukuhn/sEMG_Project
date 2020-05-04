@@ -1,7 +1,10 @@
+"""
+This file contains various utility functions used throughout the application.
+
+"""
+from scipy.signal import butter, lfilter
 import datetime
 import os
-
-
 
 def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
@@ -54,3 +57,36 @@ def create_dirs(subject_suffix, motion_suffix, trial_suffix):
     if not os.path.exists(path):
         os.makedirs(path)
     return path + '/trial-{}.csv'.format(trial_suffix)
+
+def butter_bandpass(lowcut, highcut, fs, order=5):
+    """
+    Creates a butterworth filter.
+
+    Used for analyzing the different between the DWT and a typical bandpass
+
+    @params:
+        lowcut(Float) - Required: Lowerbound cutoff frequency
+        highcut(Float) - Required: Upperbound cutoff frequency
+        fs(Int) - Required: Sampling Rate
+        order(Int) - Required: Heuristic proportional to attentuation strength
+    """
+    nyq = 0.5 * fs
+    low = lowcut / nyq
+    high = highcut / nyq
+    b, a = butter(order, [low, high], btype='band')
+    return b, a
+
+def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
+    """
+    Applies a butterworth filter to the the provided data.
+
+    @params:
+        data(Arr[Int]) - Required: Raw emg data from a particular sensor
+        lowcut(Float) - Required: Lowerbound cutoff frequency
+        highcut(Float) - Required: Upperbound cutoff frequency
+        fs(Int) - Required: Sampling Rate
+        order(Int) - Required: Heuristic proportional to attentuation strength
+    """
+    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
+    y = lfilter(b, a, data)
+    return y

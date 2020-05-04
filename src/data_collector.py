@@ -10,10 +10,19 @@ import datetime
 import csv
 from utils import print_progress_bar, create_dirs, path_exists
 
-RECORDING_DURATION = 60
-WRITING_DURATION = 30
-HAND_MOTIONS = {1: "thumb", 2: "index", 3: "middle", 4: "ring+pinky", 5:"pinky", 6: "open-palm", 7: "fist"}  # Will be added to
-BAUD_RATE = 9600
+RECORDING_DURATION = 300  # Data recording length in seconds
+WRITING_DURATION = 30  # Data writing length in seconds
+HAND_MOTIONS = {
+    1: "thumb",
+    2: "index",
+    3: "middle",
+    4: "ring+pinky",
+    5: "pinky",
+    6: "open-palm",
+    7: "fist"
+} # Will be refined somehow (Integration with ROS for poses?)
+
+BAUD_RATE = 9600  # Will test varying BAUD rates, though this should suffice
 PORT = '/dev/ttyACM0'
 
 arduino = serial.Serial(PORT, BAUD_RATE)
@@ -29,7 +38,6 @@ def close_connection(arduino):
     arduino.close()
     print("Connection closed. Good luck with the project!\n")
     return False
-
 
 def prompt_dispatcher(function_key):
     """
@@ -101,7 +109,7 @@ def collect_data(data_path, hand_motion):
 
     # Add names of columns for CSV file
     headers = ["Sensor" + str(num) for num in range(5)]
-    rows = [ headers ]
+    rows = [ headers ]  # 2D Array that will contain data from each sensor
 
     # Create Datetimes that dictate length of data recording
     start_time = datetime.datetime.now()
@@ -113,26 +121,24 @@ def collect_data(data_path, hand_motion):
     print("Data collection started!\nDuration - {} seconds".format(RECORDING_DURATION))
     time.sleep(5)
     arduino.timeout=.01
-    read_bytes = b''
     arduino.flushInput()
 
+    read_bytes = b''
     while datetime.datetime.now() < end_time:
         curr_row = []
         read_bytes += arduino.read(10000)
         print_progress_bar(datetime.datetime.now(), start_time, end_time, length=50)
 
-    d =[int(x) for x in read_bytes.split()]
-    N = len(d)
-    # sensor2data = {i : [] for i in range(NUM_SENSORS)}
+    parsed_data = [int(x) for x in read_bytes.split()]
+    N = get_length(parsed_data)
     curr_row = []
-    for i in range(len(d)):
-        # sensor2data[i].append(val)
-        if i % 5 == 0:
+    for i in range(len(parsed_data)):
+        if i % 5 == 0:  # Data from a sensors sent in succession
             rows.append(curr_row)
-            curr_row = []
-        curr_row.append(d[i])
+            curr_row = []  # After reading from five sensors, reset array
+        curr_row.append(parsed_data[i])
+    print(d, "Total number of samples from this trial: {}".format(N)
 
-    print(d, len(d))
     ######################################
     #----------- Data Writing -----------#
     ######################################
@@ -164,7 +170,6 @@ def initialize_pipeline():
 
     # If trial data already exists, ask if you wish to proceed.
     if not prompt_dispatcher("Is this a valid path?")(data_path):
-
         return
 
     # Prime for data collection

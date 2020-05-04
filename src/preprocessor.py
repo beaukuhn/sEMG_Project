@@ -7,24 +7,50 @@ import matplotlib.pyplot as plt
 NUM_SENSORS = 5
 wavelet = 'db2'  # also try coiflet5
 level = 4  # decimation level
-fs = 1000 # sampling rate
+#fs = 1000 # sampling rate Probably not necessary
 
-# 1) Get signal data
-# 2) Threshold data
 def get_data_from_csv(data_path):
+    """
+    Parses emg data from csv file
+
+    @params
+    data_path(str) - Required:
+    """
     raw_emg_data = genfromtxt(data_path, delimiter=',')[1:, :]
     return raw_emg_data
 
 def get_length(raw_emg_data):
+    """
+    Gets the length of the raw emg data signal for a particular sensor
+
+    @params
+    raw_emg_data(Arr[Int]) - Required: Raw emg data from particular sensor
+    """
     N = np.shape(raw_emg_data)[0]  # Signal length
     # N = np.size(emg_data)  # Total signal samples
     return N
 
-# universal_thresh = math.sqrt(math.log(N, base))
+def create_threshhold():
+    """
+    Creates a threshold based off of signal characteristics. This is used for
+    getting rid of noise in the sparse representation of the DWT data
+    """
+    # universal_thresh = math.sqrt(math.log(N, base))
+    # threshed_sig = threshold(signal, , 'soft')
+    return
 
-# threshed_sig = threshold(signal, , 'soft')
+def create_sensor2reads(raw_emg_data):
+    """
+    This function gets the raw signal data from an individual sensor.
 
-def create_sensor2reads_map(raw_emg_data):
+    Ex: sensor2reads[2] -> Sensor data from the third sensor
+
+    @params:
+    raw_emg_data(Arr[Int]) - Required: Raw emg data from get_data_from_csv
+
+    @returns:
+    sensor2reads(Dict[Int] -> Arr[Int])
+    """
     sensor2reads = dict()
     for sensor_num in range(NUM_SENSORS):
         signal = raw_emg_data[:, sensor_num]
@@ -41,7 +67,9 @@ def create_sensor2reads_map(raw_emg_data):
 def create_decimation_level_map(sig, max_lvl, wavelet='db2'):
     """
     Returns a mapping from c(A/D)n -> [coeffs @ c(A/D)n]
-    called detail coefs cause high frequest captures details
+    called detail coefs cause high frequest captures details.
+
+    This map contains the output of the dwt at every level
 
     @params:
      - sig(np.Array[int]) - Required -> raw data from a single sensor
@@ -61,28 +89,31 @@ def create_decimation_level_map(sig, max_lvl, wavelet='db2'):
         }
     return d
 
-def create_sensor2dwt_map(sensor2reads):
+def create_sensor2dwt(sensor2reads, level):
+    """
+    Creates a map `sensor2dwt` from sensors to the DWT output decimated at
+    `level`
+
+    While the decimation level map allows for analysis of the dwt at each level,
+    the sensor2dwt generates the nth level output for the dwt.
+
+    It contains less information than the decimation level map, but provides a
+    realistic view of how the typical output for an nth level dwt.
+
+    @params
+    sensor2reads(Dict[Int] -> Arr[Int]) - Required
+
+    @returns
+    sensor2dwt(Dict[Int] -> Arr[Float])
+    """
     sensor2dwt = dict()
     for sensor_num in range(NUM_SENSORS):
         sensor2dwt[sensor_num] = wavedec(sensor2reads[sensor_num], wavelet, level=level)
     return sensor2dwt
 
-# def create_sensor2declvls_map(decimation)
-#
-#     # for type in ['a', 'd']:
-#     #     for lvl in range(1, max_level+1):
-#     #         d[[]
-#     # return d
-
-
 def get_level_coeffs(sig, level):
     # returns part ('a') or ('d') coefficients at level)
     return
-#
-# def create_threshold():
-#     d=
-
-# def rescaling(threshold):
 
 def plot1(sensor2declvlmap, sensor_num):
     s2d = sensor2declvlmap[sensor_num]
@@ -100,31 +131,11 @@ def plot_data(sensor2reads, sensor2dwt, sensor_num):
 def plot_reconstructed_data(sensor2dwt, sensor_num):
     plt.show()
 
-############# test ########
-from scipy.signal import butter, lfilter
-
-def butter_bandpass(lowcut, highcut, fs, order=5):
-    nyq = 0.5 * fs
-    low = lowcut / nyq
-    high = highcut / nyq
-    b, a = butter(order, [low, high], btype='band')
-    return b, a
-
-
-def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
-    b, a = butter_bandpass(lowcut, highcut, fs, order=order)
-    y = lfilter(b, a, data)
-    return y
-
-# def plot2(sensor2dwt, sensor_num):
-#     plt.stem(sensor2dwt[senosor_num]
-
-# def main():
 data_path = './data/subject-0/motion-fist/trial-3b.csv'
 raw_emg_data = get_data_from_csv(data_path)
 N = get_length(raw_emg_data)
-sensor2reads = create_sensor2reads_map(raw_emg_data)
-sensor2dwt = create_sensor2dwt_map(sensor2reads)
+sensor2reads = create_sensor2reads(raw_emg_data)
+sensor2dwt = create_sensor2dwt(sensor2reads)
 coeffs4 = sensor2dwt[4]
 sensor2declvlmap = dict()
 for sensor_num in range(NUM_SENSORS):
@@ -134,7 +145,7 @@ plot_data(sensor2reads, sensor2dwt, 4)
 
 #### TODO ####
 # calculate threshold
-# renormalize w/ threshold over detail coefs
+# renormalize w/ soft threshold over detail coefs
 # plot_original_data(sensor2reads, 0)
 # plot_reconstructed_data(sensor2dwt, 0)
 # create plotting functions to make research ezier
