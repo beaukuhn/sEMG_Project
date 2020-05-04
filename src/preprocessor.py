@@ -129,7 +129,7 @@ coeffs4 = sensor2dwt[4]
 sensor2declvlmap = dict()
 for sensor_num in range(NUM_SENSORS):
     sensor2declvlmap[sensor_num] = create_decimation_level_map(sensor2reads[sensor_num], 4)
-plot1(sensor2declvlmap, 4)
+# plot1(sensor2declvlmap, 4)
 plot_data(sensor2reads, sensor2dwt, 4)
 
 #### TODO ####
@@ -138,12 +138,12 @@ plot_data(sensor2reads, sensor2dwt, 4)
 # plot_original_data(sensor2reads, 0)
 # plot_reconstructed_data(sensor2dwt, 0)
 # create plotting functions to make research ezier
-d=sensor2reads[4]
-a = butter_bandpass_filter(d, 50.0, 450.0, 1000.0)
-plt.subplot(1,2,1)
-plt.stem(d)
-plt.subplot(1,2,2)
-plt.stem(a)
-plt.show()
-base = 10  # log base
-universal_thresh = math.sqrt(2 * math.log(N, base))
+# d=sensor2reads[4]
+# a = butter_bandpass_filter(d, 50.0, 450.0, 1000.0)
+# plt.subplot(1,2,1)
+# plt.stem(d)
+# plt.subplot(1,2,2)
+# plt.stem(a)
+# plt.show()
+# base = 10  # log base
+# universal_thresh = math.sqrt(2 * math.log(N, base))
