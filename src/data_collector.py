@@ -127,17 +127,19 @@ def collect_data(data_path, hand_motion):
     while datetime.datetime.now() < end_time:
         curr_row = []
         read_bytes += arduino.read(10000)
+        print(read_bytes)
         print_progress_bar(datetime.datetime.now(), start_time, end_time, length=50)
 
     parsed_data = [int(x) for x in read_bytes.split()]
-    N = get_length(parsed_data)
+    print(read_bytes)
+    N = len(parsed_data)
     curr_row = []
     for i in range(len(parsed_data)):
         if i % 5 == 0:  # Data from a sensors sent in succession
             rows.append(curr_row)
             curr_row = []  # After reading from five sensors, reset array
         curr_row.append(parsed_data[i])
-    print(d, "Total number of samples from this trial: {}".format(N)
+    print(parsed_data, "Total number of samples from this trial: {}".format(N))
 
     ######################################
     #----------- Data Writing -----------#

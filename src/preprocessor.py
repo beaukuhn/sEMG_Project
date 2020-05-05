@@ -14,7 +14,10 @@ def get_data_from_csv(data_path):
     Parses emg data from csv file
 
     @params
-    data_path(str) - Required:
+    data_path(str) - Required: Where you want to store data
+
+    @returns
+    raw_emg_data(np.Arr[np.Arr[Int]]) - 2D Array, w/ Dims NUM_SENSORS by Data
     """
     raw_emg_data = genfromtxt(data_path, delimiter=',')[1:, :]
     return raw_emg_data
@@ -24,7 +27,7 @@ def get_length(raw_emg_data):
     Gets the length of the raw emg data signal for a particular sensor
 
     @params
-    raw_emg_data(Arr[Int]) - Required: Raw emg data from particular sensor
+    raw_emg_data(np.Arr[Int]) - Required: Raw emg data from particular sensor
     """
     N = np.shape(raw_emg_data)[0]  # Signal length
     # N = np.size(emg_data)  # Total signal samples
@@ -46,7 +49,7 @@ def create_sensor2reads(raw_emg_data):
     Ex: sensor2reads[2] -> Sensor data from the third sensor
 
     @params:
-    raw_emg_data(Arr[Int]) - Required: Raw emg data from get_data_from_csv
+    raw_emg_data(np.Arr[Int]) - Required: Raw emg data from get_data_from_csv
 
     @returns:
     sensor2reads(Dict[Int] -> Arr[Int])
@@ -82,12 +85,12 @@ def create_decimation_level_map(sig, max_lvl, wavelet='db2'):
 
         Ex: dwt(sig, 2) = [cA2, CD2, CD1] where CD1 -> .5TE, CD2 -> .25TE
     """
-    d = {
+    decimation_map = {
         'c' + type.upper() + str(lvl): downcoef(type, sig, wavelet, level=lvl)
             for type in ['a', 'd']
                 for lvl in range(1, max_lvl + 1)
         }
-    return d
+    return decimation_map
 
 def create_sensor2dwt(sensor2reads, level):
     """
@@ -111,25 +114,27 @@ def create_sensor2dwt(sensor2reads, level):
         sensor2dwt[sensor_num] = wavedec(sensor2reads[sensor_num], wavelet, level=level)
     return sensor2dwt
 
-def get_level_coeffs(sig, level):
-    # returns part ('a') or ('d') coefficients at level)
+# def plot1(sensor2declvlmap, sensor_num):
+#     s2d = sensor2declvlmap[sensor_num]
+#     plt.stem(s2d['cD4'])
+#     plt.show()
+#
+# def plot_data(sensor2reads, sensor2dwt, sensor_num):
+#     plt.subplot(121)
+#     plt.stem(sensor2reads[sensor_num])
+#     plt.subplot(122)
+#     rec_sig = waverec(sensor2dwt[sensor_num], 'db2')
+#     plt.stem(rec_sig)
+#     plt.show()
+
+# def plot_reconstructed_data(sensor2dwt, sensor_num):
+#     plt.show()
+def write_dwt_data(csv):
+    """
+    Writes dwt output to csv
+    """
     return
 
-def plot1(sensor2declvlmap, sensor_num):
-    s2d = sensor2declvlmap[sensor_num]
-    plt.stem(s2d['cD4'])
-    plt.show()
-
-def plot_data(sensor2reads, sensor2dwt, sensor_num):
-    plt.subplot(121)
-    plt.stem(sensor2reads[sensor_num])
-    plt.subplot(122)
-    rec_sig = waverec(sensor2dwt[sensor_num], 'db2')
-    plt.stem(rec_sig)
-    plt.show()
-
-def plot_reconstructed_data(sensor2dwt, sensor_num):
-    plt.show()
 
 data_path = './data/subject-0/motion-fist/trial-3b.csv'
 raw_emg_data = get_data_from_csv(data_path)

@@ -8,7 +8,13 @@ import os
 
 def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
-    Call in a loop to create terminal progress bar
+    Prints a progress bar to terminal that displays the percentage completion of
+    the data recording process.
+
+    Call in a loop to create terminal progress bar.
+
+    Note: This can be used for any timed process.
+
     @params:
         curr_time   - Required  : current time (datetime.datetime)
         start_time  - Required  : process start time (datetime.datetime)

@@ -1,0 +1,41 @@
+Beau (subject 0):
+Forearm Length = 25cm
+2/3 Length = 16.3cm
+Circumference = 27cm
+1/5 Length = 5.4cm
+
+Frank (subject 1):
+Forearm Length =
+2/3 Length =
+Circumference =
+1/5 Length =
+
+Emily (subject 2):
+Forearm Length =
+2/3 Length =
+Circumference =
+1/5 Length =
+
+Artun (subject 3):
+Forearm Length = 25cm
+2/3 Length = 16.3cm
+Circumference = 26
+1/5 Length = 5.2cm
+
+Adi (subject 4):
+Forearm Length =
+2/3 Length =
+Circumference =
+1/5 Length =
+
+Alex (subject 5):
+Forearm Length =
+2/3 Length =
+Circumference =
+1/5 Length =
+
+John (subject 6):
+Forearm Length =
+2/3 Length =
+Circumference =
+1/5 Length =
