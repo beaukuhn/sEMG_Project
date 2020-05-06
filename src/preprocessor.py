@@ -1,4 +1,5 @@
 from pywt import wavedec, threshold, downcoef, waverec
+import pywt
 import numpy as np
 from numpy import genfromtxt
 import math
@@ -119,7 +120,7 @@ def create_sensor2dwt(sensor2reads, level):
 #     plt.stem(s2d['cD4'])
 #     plt.show()
 #
-# def plot_data(sensor2reads, sensor2dwt, sensor_num):
+#def plot_data(sensor2reads, sensor2dwt, sensor_num):
 #     plt.subplot(121)
 #     plt.stem(sensor2reads[sensor_num])
 #     plt.subplot(122)
@@ -136,18 +137,19 @@ def write_dwt_data(csv):
     return
 
 
-data_path = './data/subject-0/motion-fist/trial-3b.csv'
+data_path = './data/subject-0/motion-fist/trial-0.csv'
 raw_emg_data = get_data_from_csv(data_path)
 N = get_length(raw_emg_data)
 sensor2reads = create_sensor2reads(raw_emg_data)
-sensor2dwt = create_sensor2dwt(sensor2reads)
+sensor2dwt = create_sensor2dwt(sensor2reads,4)
 coeffs4 = sensor2dwt[4]
 sensor2declvlmap = dict()
 for sensor_num in range(NUM_SENSORS):
     sensor2declvlmap[sensor_num] = create_decimation_level_map(sensor2reads[sensor_num], 4)
 # plot1(sensor2declvlmap, 4)
-plot_data(sensor2reads, sensor2dwt, 4)
-
+#plot_data(sensor2reads, sensor2dwt, 4)
+cA, cD = pywt.dwt(raw_emg_data,'db2')
+print(cA)
 #### TODO ####
 # calculate threshold
 # renormalize w/ soft threshold over detail coefs
