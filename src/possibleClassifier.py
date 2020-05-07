@@ -105,7 +105,7 @@ def fairSubSample(rawData, gripLabels, cutOffs, percentage):
 
 	return trainingData, testingData, trainingLabels, testingLabels
 
-def trainClassifier(clf, rawData, gripLabels):
+def trainClassifier(clf, data, gripLabels):
 	"""
 	assumes each csv is a distinct grasp measurement
 	assumes there are at least as many trials as labels for each label for LDA
@@ -119,10 +119,10 @@ def trainClassifier(clf, rawData, gripLabels):
 	@returns
 	clf -> trained classifier using a subject's data
 	"""
-	dwtData = np.array([create_sensor2dwt(trial,level) for trial in rawData])
+	
 
 	# print(dwtData.shape)
-	clf.fit(dwtData, gripLabels)
+	clf.fit(data, gripLabels)
 
 	# print(clf.predict([dwtData[0,:]]))
 	# print(clf.predict([dwtData[-1,:]]))
@@ -151,9 +151,11 @@ if __name__ == "__main__":
 	# print(np.array(testingData).shape)
 	# print(trainingLabels)
 	# print(testingLabels)
+
+	trainingDWT = np.array([create_sensor2dwt(trial,level) for trial in trainingData])
 	testingDWT = np.array([create_sensor2dwt(trial,level) for trial in testingData])
 
-	clf = trainClassifier(clf, trainingData, trainingLabels)
+	clf = trainClassifier(clf, trainingDWT, trainingLabels)
 	# print(len(testingData))
 	print(testingLabels)
 	print(clf.predict(testingDWT))
