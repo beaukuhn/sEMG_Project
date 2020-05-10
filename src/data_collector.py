@@ -111,25 +111,14 @@ def collect_data(data_path, hand_motion):
     # --------- Data Recording ---------- #
     #######################################
     print("Data collection started!\nDuration - {} seconds".format(RECORDING_DURATION))
-    # time.sleep(.1)
     arduino.flushInput()
     read_bytes = b''
     bytes = []
     while datetime.datetime.now() < end_time:
-        # print(time.time())
-        # read_bytes += arduino.read(10000000000)
         read_bytes += arduino.read(10000000000)
-        # bytes.append(read_bytes)
-        # print(time.time())
         print('hi :)')
-        # print(read_bytes)
-        # print_progress_bar(datetime.datetime.now(), start_time, end_time, length=50)
-    # split_data = read_bytes.split()
-    # print(split_data)
     print(len(bytes))
-    # print(bytes[0] in bytes[1])
     parsed_data = [int(x) for x in read_bytes.split()]
-    # print(read_bytes)
     N = len(parsed_data)
     curr_row = []
     for i in range(len(parsed_data)):
