@@ -116,7 +116,6 @@ def collect_data(data_path, hand_motion):
     bytes = []
     while datetime.datetime.now() < end_time:
         read_bytes += arduino.read(10000000000)
-        print('hi :)')
     print(len(bytes))
     parsed_data = [int(x) for x in read_bytes.split()]
     N = len(parsed_data)
