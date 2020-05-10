@@ -1,6 +1,10 @@
 from pywt import wavedec, threshold, downcoef, waverec
+<<<<<<< HEAD
 from utils import HAND_MOTIONS
 import time
+=======
+import pywt
+>>>>>>> 0e2c949db192ed278af085e5edc0887e1bf34377
 import numpy as np
 from numpy import genfromtxt
 import math
@@ -124,6 +128,7 @@ def create_sensor2dwt(sensor2data, mode='normal', decimation_level=4):
             sensor2dwt[sensor_num] = arrays
     return sensor2dwt
 
+<<<<<<< HEAD
 def plot1(sensor2coefs, sensor_num):
     s2d = sensor2coefs[sensor_num]
     plt.stem(s2d['cD4'])
@@ -156,6 +161,28 @@ def plot_dwt_data(sensor2coefs, sensor_num):
     axes = plt.gca()
     plt.stem(coefs['cA2'])
     axes.set_title('cA2', fontsize=10)
+=======
+# def plot1(sensor2declvlmap, sensor_num):
+#     s2d = sensor2declvlmap[sensor_num]
+#     plt.stem(s2d['cD4'])
+#     plt.show()
+#
+#def plot_data(sensor2reads, sensor2dwt, sensor_num):
+#     plt.subplot(121)
+#     plt.stem(sensor2reads[sensor_num])
+#     plt.subplot(122)
+#     rec_sig = waverec(sensor2dwt[sensor_num], 'db2')
+#     plt.stem(rec_sig)
+#     plt.show()
+
+# def plot_reconstructed_data(sensor2dwt, sensor_num):
+#     plt.show()
+def write_dwt_data(csv):
+    """
+    Writes dwt output to csv
+    """
+    return
+>>>>>>> 0e2c949db192ed278af085e5edc0887e1bf34377
 
     plt.subplot(424)
     plt.stem(coefs['cD2'])
@@ -163,6 +190,7 @@ def plot_dwt_data(sensor2coefs, sensor_num):
     axes.set_title('cD2', fontsize=10)
     axes.set_ylim(y_bounds)
 
+<<<<<<< HEAD
     plt.subplot(425)
     axes = plt.gca()
     axes.set_title('cA3', fontsize=10)
@@ -200,10 +228,18 @@ N = get_length(raw_emg_data)
 sensor2data = create_sensor2data(raw_emg_data)
 sensor2dwt = create_sensor2dwt(sensor2data)
 s2dwt_thresh = create_sensor2dwt(sensor2data, mode='thresh')
+=======
+data_path = './data/subject-0/motion-fist/trial-0.csv'
+raw_emg_data = get_data_from_csv(data_path)
+N = get_length(raw_emg_data)
+sensor2reads = create_sensor2reads(raw_emg_data)
+sensor2dwt = create_sensor2dwt(sensor2reads,4)
+>>>>>>> 0e2c949db192ed278af085e5edc0887e1bf34377
 coeffs4 = sensor2dwt[4]
 sensor2coefs = dict()
 s2c_thresh = dict()
 for sensor_num in range(NUM_SENSORS):
+<<<<<<< HEAD
     sensor2coefs[sensor_num] = create_decimation_level_map(sensor2data[sensor_num], 4)
     s2c_thresh[sensor_num] = create_decimation_level_map(sensor2data[sensor_num], 4, mode='thresh')
 
@@ -217,6 +253,13 @@ plot_data(sensor2data, sensor2dwt, 0)
 # plot_data_thresh(sensor2data, sensor2dwt, 0)
 # plot_dwt_data(sensor2dwt, sensor2coefs)
 
+=======
+    sensor2declvlmap[sensor_num] = create_decimation_level_map(sensor2reads[sensor_num], 4)
+# plot1(sensor2declvlmap, 4)
+#plot_data(sensor2reads, sensor2dwt, 4)
+cA, cD = pywt.dwt(raw_emg_data,'db2')
+print(cA)
+>>>>>>> 0e2c949db192ed278af085e5edc0887e1bf34377
 #### TODO ####
 # calculate threshold
 # renormalize w/ soft threshold over detail coefs
