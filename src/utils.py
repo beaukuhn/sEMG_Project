@@ -6,6 +6,16 @@ from scipy.signal import butter, lfilter
 import datetime
 import os
 
+HAND_MOTIONS = { # This is here to simplify imports
+    1: "thumb",
+    2: "index",
+    3: "middle",
+    4: "ring+pinky",
+    5: "pinky",
+    6: "open-palm",
+    7: "fist"
+} # Will be refined somehow (Integration with ROS for poses?)
+
 def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
     Prints a progress bar to terminal that displays the percentage completion of

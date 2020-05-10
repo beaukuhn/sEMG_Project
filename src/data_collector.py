@@ -8,24 +8,17 @@ import serial
 import time
 import datetime
 import csv
-from utils import print_progress_bar, create_dirs, path_exists
+from utils import create_dirs, path_exists, HAND_MOTIONS, print_progress_bar
 
-RECORDING_DURATION = 300  # Data recording length in seconds
-WRITING_DURATION = 30  # Data writing length in seconds
-HAND_MOTIONS = {
-    1: "thumb",
-    2: "index",
-    3: "middle",
-    4: "ring+pinky",
-    5: "pinky",
-    6: "open-palm",
-    7: "fist"
-} # Will be refined somehow (Integration with ROS for poses?)
+######### CONFIG PARAMETERS ###########
+RECORDING_DURATION = 5  # Data recording length in seconds
+WRITING_DURATION = 10  # Data writing length in seconds
+BAUD_RATE = 2000000   # Will test varying BAUD rates, though this should suffice
+INPUT_TIMEOUT = RECORDING_DURATION  # How long we wait to receive data b4 each iteration
+PORT = '/dev/ttyACM0'  # Serial Device Port
 
-BAUD_RATE = 9600  # Will test varying BAUD rates, though this should suffice
-PORT = '/dev/ttyACM0'
-
-arduino = serial.Serial(PORT, BAUD_RATE)
+######### CONNECT ARDUINO #############
+arduino = serial.Serial(PORT, BAUD_RATE, timeout=INPUT_TIMEOUT)
 print("Arduino connection established: {}".format(arduino.is_open))
 
 def close_connection(arduino):
@@ -49,7 +42,6 @@ def prompt_dispatcher(function_key):
     @returns:
         function_dispatcher[function_key](function)
     """
-
     def gather_parameters(key):
         subject_query = "What is the subject number?\n"
         motion_query = ("Which hand motion would like to collect data for?\n" +
@@ -119,19 +111,25 @@ def collect_data(data_path, hand_motion):
     # --------- Data Recording ---------- #
     #######################################
     print("Data collection started!\nDuration - {} seconds".format(RECORDING_DURATION))
-    time.sleep(5)
-    arduino.timeout=.01
+    # time.sleep(.1)
     arduino.flushInput()
-
     read_bytes = b''
+    bytes = []
     while datetime.datetime.now() < end_time:
-        curr_row = []
-        read_bytes += arduino.read(10000)
-        print(read_bytes)
-        print_progress_bar(datetime.datetime.now(), start_time, end_time, length=50)
-
+        # print(time.time())
+        # read_bytes += arduino.read(10000000000)
+        read_bytes += arduino.read(10000000000)
+        # bytes.append(read_bytes)
+        # print(time.time())
+        print('hi :)')
+        # print(read_bytes)
+        # print_progress_bar(datetime.datetime.now(), start_time, end_time, length=50)
+    # split_data = read_bytes.split()
+    # print(split_data)
+    print(len(bytes))
+    # print(bytes[0] in bytes[1])
     parsed_data = [int(x) for x in read_bytes.split()]
-    print(read_bytes)
+    # print(read_bytes)
     N = len(parsed_data)
     curr_row = []
     for i in range(len(parsed_data)):
@@ -139,7 +137,7 @@ def collect_data(data_path, hand_motion):
             rows.append(curr_row)
             curr_row = []  # After reading from five sensors, reset array
         curr_row.append(parsed_data[i])
-    print(parsed_data, "Total number of samples from this trial: {}".format(N))
+    print("Total number of samples from this trial: {}".format(N))
 
     ######################################
     #----------- Data Writing -----------#
