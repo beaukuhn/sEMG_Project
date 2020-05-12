@@ -15,7 +15,7 @@ RECORDING_DURATION = 5  # Data recording length in seconds
 WRITING_DURATION = 10  # Data writing length in seconds
 BAUD_RATE = 2000000   # Will test varying BAUD rates, though this should suffice
 INPUT_TIMEOUT = RECORDING_DURATION  # How long we wait to receive data b4 each iteration
-PORT = '/dev/ttyACM0'  # Serial Device Port
+PORT = '/dev/cu.usbmodem14201' #'/dev/ttyACM0'  # Serial Device Port
 
 ######### CONNECT ARDUINO #############
 arduino = serial.Serial(PORT, BAUD_RATE, timeout=INPUT_TIMEOUT)
@@ -115,7 +115,7 @@ def collect_data(data_path, hand_motion):
     read_bytes = b''
     bytes = []
     while datetime.datetime.now() < end_time:
-        read_bytes += arduino.read(10000000000)
+        read_bytes += arduino.read(100000000)
     print(len(bytes))
     parsed_data = [int(x) for x in read_bytes.split()]
     N = len(parsed_data)
