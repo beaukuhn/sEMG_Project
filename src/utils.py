@@ -6,7 +6,7 @@ from scipy.signal import butter, lfilter
 import datetime
 import os
 
-HAND_MOTIONS = { # This is here to simplify imports
+HAND_MOTIONS = { # This is here to avoid redundancy via imports
     1: "thumb",
     2: "index",
     3: "middle",
@@ -14,7 +14,7 @@ HAND_MOTIONS = { # This is here to simplify imports
     5: "pinky",
     6: "open-palm",
     7: "fist"
-} # Will be refined somehow (Integration with ROS for poses?)
+}
 
 def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
@@ -106,3 +106,54 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
     b, a = butter_bandpass(lowcut, highcut, fs, order=order)
     y = lfilter(b, a, data)
     return y
+
+def create_decimation_level_map(sig, max_lvl, mode=''):
+    """
+    @params:
+    - sig(np.Array[int]) - Required -> raw data from a single sensor
+
+    @returns:
+    - decimation_map
+    """
+    if mode != 'thresh':
+        decimation_map = {
+            'c' + type.upper() + str(lvl): downcoef(type, sig, WAVELET, level=lvl)
+                for type in ['a', 'd']
+                    for lvl in range(1, max_lvl + 1)
+            }
+    else:
+        decimation_map = {
+            'c' + type.upper() + str(lvl): apply_threshold(downcoef(type, sig, WAVELET, level=lvl), THRESH)
+                for type in ['a', 'd']
+                    for lvl in range(1, max_lvl + 1)
+        }
+    return decimation_map
+
+def create_sensor2dwt(sensor2data, mode='normal', decimation_level=4):
+    """
+    Creates a map `sensor2dwt` from sensors to the DWT output decimated at
+    `level`
+
+    While the decimation level map allows for analysis of the dwt at each level,
+    the sensor2dwt generates the nth level output for the dwt.
+
+    It contains less information than the decimation level map, but provides a
+    realistic view of how the typical output for an nth level dwt.
+
+    @params
+    sensor2data(Dict[Int] -> Arr[Int]) - Required
+
+    @returns
+    sensor2dwt(Dict[Int] -> Arr[Float])
+    """
+    sensor2dwt = dict()
+    if mode == 'normal':
+        for sensor_num in range(NUM_SENSORS):
+            sensor2dwt[sensor_num] = wavedec(sensor2data[sensor_num], WAVELET, level=decimation_level)
+    elif mode == 'thresh':
+        for sensor_num in range(NUM_SENSORS):
+            arrays = wavedec(sensor2data[sensor_num], WAVELET, level=decimation_level)
+            for i in range(len(arrays)):
+                arrays[i] = thresh(arrays[i], THRESH)
+            sensor2dwt[sensor_num] = arrays
+    return sensor2dwt
