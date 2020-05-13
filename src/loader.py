@@ -1,4 +1,3 @@
-
 from numpy import genfromtxt
 
 def get_data_from_csv(data_path='./data/subject-0/motion-fist/trial-1.csv'):
