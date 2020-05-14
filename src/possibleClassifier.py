@@ -7,6 +7,8 @@ import math
 import matplotlib.pyplot as plt
 import os
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+import sklearn.svm as svm
 
 NUM_SENSORS = 5
 WAVELET = 'db2'  # also try coiflet5
@@ -29,10 +31,37 @@ def fairSubSample(rawData, gripLabels, cutOffs, percentage):
 		start += cutOff
 	return trainingData, testingData, trainingLabels, testingLabels
 
+def randomSubSample(rawData, gripLabels, cutOffs, percentage):
+	"""
+
+	"""
+	# trainingData = []
+	# trainingLabels = []
+	# testingData = []
+	# testingLabels = []
+
+	trainingCount = math.floor(len(gripLabels)*percentage)
+
+	indexes = np.arange(len(gripLabels))
+	np.random.shuffle(indexes)
+
+	trainIndexes = indexes[0:trainingCount]
+	testIndexes = indexes[trainingCount:]
+	
+	trainingData = [rawData[idx] for idx in trainIndexes]
+	testingData = [rawData[idx] for idx in testIndexes]
+
+	trainingLabels = [gripLabels[idx] for idx in trainIndexes]
+	testingLabels = [gripLabels[idx] for idx in testIndexes]
+
+	# print(len(testIndexes))
+	# print(len(trainIndexes))
+	return trainingData, testingData, trainingLabels, testingLabels
+
 def trainClassifier(clf, data, gripLabels):
 	"""
 	Assumes each csv is a distinct grasp measurement
-	Assumes there are at least as many trials as labels for each label for LDA
+	Assumes there are at least as many trials as labels for each label in LDA
 	(if using 3 graps, each grasp needs min of 3 trials)
 
 	@params
@@ -49,20 +78,36 @@ def trainClassifier(clf, data, gripLabels):
 if __name__ == "__main__":
 	subjectNumber = 4
 	clf = LinearDiscriminantAnalysis()
+	# clf = QuadraticDiscriminantAnalysis()
+	# clf = svm.SVC()
+	# clf = svm.LinearSVC(dual = False, C = 1000)
+
 	# gripList = ["motion-fist", "motion-open-palm"]  # import hand motions then slice
 	gripList = ["motion-fist", "motion-open-palm"]
 	rawData, gripLabels, cutOffs = readFullData(gripList, subjectNumber)
+
+	# butter_bandpass_filter(rawData,10,550)
+	
 	minLength =  min([len(trial) for trial in rawData])
 	minPowerOf2 = 2**math.floor(math.log(minLength,2))
+	# print(minLength)
+	# print(minPowerOf2)
+
 	rawData = [trial[:minPowerOf2] for trial in rawData]
+	# rawData = [trial[:minLength] for trial in rawData]
+
+	# trainingData, testingData, trainingLabels, testingLabels = randomSubSample(rawData, gripLabels, cutOffs, .8)
 	trainingData, testingData, trainingLabels, testingLabels = fairSubSample(rawData, gripLabels, cutOffs, .8)
 	
 	print(len(trainingData))
 	print(len(testingData))
 
-	trainingDWT = np.array([s2dwt(trial,LEVEL) for trial in trainingData])
-	testingDWT = np.array([s2dwt(trial,LEVEL) for trial in testingData])
+	trainingDWT = np.array([s2dwt(trial,LEVEL, mode = 'thresh') for trial in trainingData])
+	testingDWT = np.array([s2dwt(trial,LEVEL, mode = 'thresh') for trial in testingData])
+	print("Training!")
+	# for i in range()
 	clf = trainClassifier(clf, trainingDWT, trainingLabels)
+	print("Classifying!")
 
 	print(testingLabels)
 	print(clf.predict(testingDWT))
