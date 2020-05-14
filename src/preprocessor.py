@@ -37,7 +37,7 @@ def s2dwt(raw_emg, level=LEVEL, mode='normal'):
 		if mode == 'normal':
 			pure_coefs = [coef for level in coef_list for coef in level]
 		elif mode == 'thresh':
-			pure_coefs = [thresh(coef) for level in coef_list for coef in level]
+			pure_coefs = thresh([coef for level in coef_list for coef in level])
 		s2dwt.extend(pure_coefs)
 	return s2dwt
 
