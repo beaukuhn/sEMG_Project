@@ -57,9 +57,8 @@ def s2dwt(raw_emg, level=LEVEL, mode='normal'):
 
 def decimation_arrays(raw_emg, mode='normal'):
     """
-    Output = [cA04 cD04 cA03 cD03 ... cA14 cD24 ... cA44 cD4 ....]
-    Ex: cA04 -> 1st Sensor, 4th level of decimation
-    Ex: cD31 -> 4th Sensor, 1st level of decimation
+	Returns the output of the dwt at each level of decimation in an array
+    Ex: Output = [cA4 cD4 cA3 cD3 ... ]
     """
     output = []
     for dec_level in range(LEVEL, 0, -1):
