@@ -98,10 +98,10 @@ def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
 def create_decimation_level_map(sig, max_lvl, mode=''):
     """
     @params:
-    - sig(np.Array[int]) - Required -> raw data from a single sensor
+        sig(np.Array[int]) - Required -> raw data from a single sensor
 
     @returns:
-    - decimation_map
+        decimation_map
     """
     if mode != 'thresh':
         decimation_map = {
@@ -116,7 +116,6 @@ def create_decimation_level_map(sig, max_lvl, mode=''):
                     for lvl in range(1, max_lvl + 1)
         }
     return decimation_map
-
 
 def create_sensor2dwt(sensor2data, mode='normal', decimation_level=4):
     """
