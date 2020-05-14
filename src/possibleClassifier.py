@@ -4,12 +4,8 @@ possibleClassifier.py
 This file contains code that pertains to both learning and classification.
 """
 from pywt import wavedec, threshold, downcoef, waverec
-<<<<<<< HEAD
 from config import NUM_SENSORS, WAVELET, LEVEL
 from preprocessor import s2dwt, thresh, decimation_arrays
-=======
-from preprocessor import s2dwt, thresh, decimation_arrays
->>>>>>> bed84c8159fcd101b5705cc49e5b0e2292dd27ae
 from loader import get_data_from_csv, readFullData
 import numpy as np
 from numpy import genfromtxt
@@ -143,15 +139,9 @@ if __name__ == "__main__":
 	print("Classifying!")
 
 	print(testingLabels)
-<<<<<<< HEAD
-	print(clf.predict(testingDWT))
-	print(sum(clf.predict(testingDWT) == testingLabels)/len(testingLabels))
-=======
 	# print(clf.predict(testingDWT))
 	# print(sum(clf.predict(testingDWT) == testingLabels)/len(testingLabels))
 
 	print(clf.predict(decimatedTesting))
 	print(sum(clf.predict(decimatedTesting) == testingLabels)/len(testingLabels))
 
-
->>>>>>> bed84c8159fcd101b5705cc49e5b0e2292dd27ae
