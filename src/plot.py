@@ -1,3 +1,9 @@
+"""
+plot.py
+
+This file contains code pertaining to plotting data.
+TODO: Refine code to parameterize functions for generalization
+"""
 def plot1(sensor2coefs, sensor_num):
     s2d = sensor2coefs[sensor_num]
     plt.stem(s2d['cD4'])

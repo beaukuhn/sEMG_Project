@@ -39,7 +39,8 @@ def prompt_dispatcher(connection, function_key):
     def gather_parameters(key):
         subject_query = "What is the subject number?\n"
         motion_query = ("Which hand motion would like to collect data for?\n" +
-                        "1: thumb, 2: index, 3: middle, 4: ring+pinky, 5:pinky, 6: open-palm, 7: fist\n")
+                        "1: thumb, 2: index, 3: middle, 4: ring+pinky," +
+                        "5:pinky, 6: open-palm, 7: fist\n")
         trial_query = "What is the trial number?\n"
         key2query = {
             "What is the subject number?": subject_query,
@@ -92,7 +93,7 @@ def parse_data(bytes):
 
 def write_data(path, data):
     """
-    Writes data to csv file located at path
+    Writes data to the specified CSV file located at `path`
     """
     with open(path, 'a+', newline='') as f:
         print("Waiting {} seconds for operation to complete...".format(WRITING_DURATION))
@@ -102,13 +103,12 @@ def write_data(path, data):
 
 def record_data(connection, path, hand_motion):
     """
-    Initializes data collection for hand_motion and writes voltage data
-    to csv file located at path.
+    Initializes the recording of sEMG data for the specified `HAND_MOTION`.
+    Writes results to a csv file located at `path` via `connection`
 
-    @param path(str) to the csv file where the data will be stored
-    @param hand_motion(str) is the motion to be performed
-    @param duration(int) is the length of time in seconds for recording
-    @param write_time(int) is the amount of time(seconds) to wait for data write
+    @param connection(PySerial Obj) - abstract representation of an arduino connection
+    @param path(str) - the csv file where the data will be stored
+    @param hand_motion(str) - the motion to be performed
     """
     print("Initializing Data Collection - Output File:{}".format(path))
     connection.flushInput()
@@ -134,7 +134,7 @@ def initialize_pipeline(connection):
     trial_num = gather_parameters('What is the trial number?')
     data_path = create_dirs(subject_num, HAND_MOTIONS[motion_num], trial_num)
     if not prompt_dispatcher("Is this a valid path?")(data_path):
-        return
+        return:=
     prompt_dispatcher("Prepare for data collection.")()
     record_data(connection, data_path, HAND_MOTIONS[motion_num])
 

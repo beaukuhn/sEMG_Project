@@ -1,6 +1,4 @@
 #Artificial Neural Network implementation
-
-
 from sklearn.neural_network import MLPClassifier
 import numpy as np
 

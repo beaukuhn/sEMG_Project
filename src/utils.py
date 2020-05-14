@@ -1,20 +1,12 @@
 """
-This file contains various utility functions used throughout the application.
+utils.py
 
+This file contains various utility functions that can be used throughout the
+application.
 """
 from scipy.signal import butter, lfilter
 import datetime
 import os
-
-HAND_MOTIONS = { # This is here to avoid redundancy via imports
-    1: "thumb",
-    2: "index",
-    3: "middle",
-    4: "ring+pinky",
-    5: "pinky",
-    6: "open-palm",
-    7: "fist"
-}
 
 def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
@@ -42,16 +34,12 @@ def print_progress_bar(curr_time, start_time, stop_time, prefix = '', suffix = '
     filledLength = int(length * elapsed_time // process_time)
     bar = fill * filledLength + '-' * (length - filledLength)
     print('\r%s |%s| %s%% %s\n' % (prefix, bar, percent, suffix), end = printEnd)
-    # Print New Line on Complete
     if curr_time >= stop_time:
         print()
 
 def path_exists(path):
     """
     Returns True if path exists
-
-    @params:
-        path(str) - Required: File/Directory path
     """
     return os.path.exists(path)
 
@@ -78,7 +66,7 @@ def butter_bandpass(lowcut, highcut, fs, order=5):
     """
     Creates a butterworth filter.
 
-    Used for analyzing the different between the DWT and a typical bandpass
+    Used for analyzing the difference between the DWT and a typical bandpass
 
     @params:
         lowcut(Float) - Required: Lowerbound cutoff frequency

@@ -1,4 +1,10 @@
+"""
+possibleClassifier.py
+
+This file contains code that pertains to both learning and classification.
+"""
 from pywt import wavedec, threshold, downcoef, waverec
+from config import NUM_SENSORS, WAVELET, LEVEL
 from preprocessor import s2dwt, thresh
 from loader import get_data_from_csv, readFullData
 import numpy as np
@@ -9,10 +15,6 @@ import os
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import sklearn.svm as svm
-
-NUM_SENSORS = 5
-WAVELET = 'db2'  # also try coiflet5
-LEVEL = 4  # decimation level
 
 def fairSubSample(rawData, gripLabels, cutOffs, percentage):
 	"""
@@ -47,7 +49,7 @@ def randomSubSample(rawData, gripLabels, cutOffs, percentage):
 
 	trainIndexes = indexes[0:trainingCount]
 	testIndexes = indexes[trainingCount:]
-	
+
 	trainingData = [rawData[idx] for idx in trainIndexes]
 	testingData = [rawData[idx] for idx in testIndexes]
 
@@ -87,7 +89,7 @@ if __name__ == "__main__":
 	rawData, gripLabels, cutOffs = readFullData(gripList, subjectNumber)
 
 	# butter_bandpass_filter(rawData,10,550)
-	
+
 	minLength =  min([len(trial) for trial in rawData])
 	minPowerOf2 = 2**math.floor(math.log(minLength,2))
 	# print(minLength)
@@ -98,7 +100,7 @@ if __name__ == "__main__":
 
 	# trainingData, testingData, trainingLabels, testingLabels = randomSubSample(rawData, gripLabels, cutOffs, .8)
 	trainingData, testingData, trainingLabels, testingLabels = fairSubSample(rawData, gripLabels, cutOffs, .8)
-	
+
 	print(len(trainingData))
 	print(len(testingData))
 
@@ -112,4 +114,3 @@ if __name__ == "__main__":
 	print(testingLabels)
 	print(clf.predict(testingDWT))
 	print(sum(clf.predict(testingDWT) == testingLabels)/len(testingLabels))
-
