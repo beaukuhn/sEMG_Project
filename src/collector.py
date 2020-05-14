@@ -8,13 +8,15 @@ import serial
 import time
 import datetime
 import csv
-from utils import create_dirs, path_exists, HAND_MOTIONS
-
-RECORDING_DURATION = 5  # Data recording length in seconds
-WRITING_DURATION = 10  # Data writing length in seconds
-BAUD_RATE = 2000000   # Will test varying BAUD rates, though this should suffice
-INPUT_TIMEOUT = RECORDING_DURATION  # How long we wait to receive data b4 each iteration
-PORT = '/dev/cu.usbmodem14201' #'/dev/ttyACM0'  # Serial Device Port
+from utils import create_dirs, path_exists
+from config import (
+    RECORDING_DURATION,
+    WRITING_DURATION,
+    BAUD_RATE,
+    INPUT_TIMEOUT,
+    HAND_MOTIONS,
+    PORT,
+)
 
 def open_connection(port=PORT, baud=BAUD_RATE, timeout=INPUT_TIMEOUT):
     connection = serial.Serial(PORT, BAUD_RATE, timeout=INPUT_TIMEOUT)
