@@ -1,8 +1,7 @@
 """
 loader.py
 
-This file contains code pertaining to loading from data stores previously
-recorded data.
+This file contains code pertinent to data ingestion.
 """
 from numpy import genfromtxt
 import os
@@ -11,10 +10,10 @@ import numpy as np
 def get_data_from_csv(data_path='./data/subject-0/motion-fist/trial-1.csv'):
     """
     @params
-    data_path(str) - Required: Where you want to store data
+        data_path(str) - Required: Where you want to store data
 
     @returns
-    raw_emg(np.Arr[np.Arr[Int]]) - 2D Array; dimensions - NUM_SENSORS x N samples
+        raw_emg(np.Arr[np.Arr[Int]]) - 2D Array; dimensions - NUM_SENSORS x N samples
     """
     raw_emg = genfromtxt(data_path, delimiter=',')[2:, :]  # skips first 2 csv lines that are nonsense
     return raw_emg

@@ -15,7 +15,7 @@ def thresh(data, thresh=THRESH):
 	Applies a threshold to each element in data
 
 	@params
-	- data(List[Int])
+		data(List[Int])
 	"""
 	for i in range(len(data)):
 		datum = data[i]
@@ -40,10 +40,10 @@ def decimation_arrays(raw_emg, mode='normal'):
 def s2dwt(raw_emg, level=LEVEL, mode='normal'):
 	"""
 	@params
-	raw_emg(List[List[Int]]) - Data from csv
+		raw_emg(List[List[Int]]) - Data from csv
 
 	@returns
-	s2dwt(Dict[Int] -> np.Arr[Float])
+		s2dwt(Dict[Int] -> np.Arr[Float])
 	"""
 	s2dwt = []
 	for sensor_num in range(NUM_SENSORS):

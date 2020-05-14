@@ -139,9 +139,15 @@ if __name__ == "__main__":
 	print("Classifying!")
 
 	print(testingLabels)
+<<<<<<< HEAD
+	print(clf.predict(testingDWT))
+	print(sum(clf.predict(testingDWT) == testingLabels)/len(testingLabels))
+=======
 	# print(clf.predict(testingDWT))
 	# print(sum(clf.predict(testingDWT) == testingLabels)/len(testingLabels))
 
 	print(clf.predict(decimatedTesting))
 	print(sum(clf.predict(decimatedTesting) == testingLabels)/len(testingLabels))
 
+
+>>>>>>> bed84c8159fcd101b5705cc49e5b0e2292dd27ae
