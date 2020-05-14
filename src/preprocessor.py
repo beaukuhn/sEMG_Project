@@ -11,17 +11,17 @@ LEVEL = 4  # decimation level
 THRESH = 1
 
 def thresh(data, thresh=THRESH):
-    """
-    Applies a threshold to each element in data
+	"""
+	Applies a threshold to each element in data
 
-    @params
-    - data(List[Int])
-    """
-    for i in range(len(data)):
-        datum = data[i]
-        if datum < thresh:
-            data[i] = 0.0
-    return data
+	@params
+	- data(List[Int])
+	"""
+	for i in range(len(data)):
+		datum = data[i]
+		if datum < thresh:
+			data[i] = 0.0
+	return data
 
 def s2dwt(raw_emg, level=LEVEL, mode='normal'):
 	"""
@@ -33,12 +33,12 @@ def s2dwt(raw_emg, level=LEVEL, mode='normal'):
 	"""
 	s2dwt = []
 	for sensor_num in range(NUM_SENSORS):
-        coef_list = wavedec(raw_emg[:,sensor_num], WAVELET, level)
-        if mode == 'normal':
-            pure_coefs = [coef for level in coef_list for coef in level]
-        elif mode == 'thresh':
-            pure_coefs = [thresh(coef) for level in coef_list for coef in level]
-        s2dwt.extend(pure_coefs)
+		coef_list = wavedec(raw_emg[:,sensor_num], WAVELET, level)
+		if mode == 'normal':
+			pure_coefs = [coef for level in coef_list for coef in level]
+		elif mode == 'thresh':
+			pure_coefs = [thresh(coef) for level in coef_list for coef in level]
+		s2dwt.extend(pure_coefs)
 	return s2dwt
 
 # def gather_parameters(key):

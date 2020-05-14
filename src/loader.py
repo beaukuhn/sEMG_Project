@@ -1,4 +1,6 @@
 from numpy import genfromtxt
+import os
+import numpy as np
 
 def get_data_from_csv(data_path='./data/subject-0/motion-fist/trial-1.csv'):
     """
@@ -8,9 +10,9 @@ def get_data_from_csv(data_path='./data/subject-0/motion-fist/trial-1.csv'):
     @returns
     raw_emg(np.Arr[np.Arr[Int]]) - 2D Array, w/ Dims NUM_SENSORS by Data
     """
-    print("Reading data from {}...".format(data_path))
+    # print("Reading data from {}...".format(data_path))
     raw_emg = genfromtxt(data_path, delimiter=',')[2:, :]  # skips first 2 csv lines that are nonsense
-    print("Data read complete")
+    # print("Data read complete")
     return raw_emg
 
 def readFullData(grips, subjectNumber):

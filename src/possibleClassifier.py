@@ -47,14 +47,24 @@ def trainClassifier(clf, data, gripLabels):
 	return clf
 
 if __name__ == "__main__":
-	subjectNumber = 3
+	subjectNumber = 4
 	clf = LinearDiscriminantAnalysis()
 	# gripList = ["motion-fist", "motion-open-palm"]  # import hand motions then slice
+	gripList = ["motion-fist", "motion-open-palm"]
 	rawData, gripLabels, cutOffs = readFullData(gripList, subjectNumber)
 	minLength =  min([len(trial) for trial in rawData])
 	minPowerOf2 = 2**math.floor(math.log(minLength,2))
 	rawData = [trial[:minPowerOf2] for trial in rawData]
 	trainingData, testingData, trainingLabels, testingLabels = fairSubSample(rawData, gripLabels, cutOffs, .8)
+	
+	print(len(trainingData))
+	print(len(testingData))
+
 	trainingDWT = np.array([s2dwt(trial,LEVEL) for trial in trainingData])
 	testingDWT = np.array([s2dwt(trial,LEVEL) for trial in testingData])
 	clf = trainClassifier(clf, trainingDWT, trainingLabels)
+
+	print(testingLabels)
+	print(clf.predict(testingDWT))
+	print(sum(clf.predict(testingDWT) == testingLabels)/len(testingLabels))
+
