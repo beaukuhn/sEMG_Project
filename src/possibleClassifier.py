@@ -14,7 +14,12 @@ import matplotlib.pyplot as plt
 import os
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.linear_model import SGDClassifier
+from sklearn.neural_network import MLPClassifier
 import sklearn.svm as svm
+
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
 
 def fairSubSample(rawData, gripLabels, cutOffs, percentage):
 	"""
@@ -79,10 +84,19 @@ def trainClassifier(clf, data, gripLabels):
 
 if __name__ == "__main__":
 	subjectNumber = 4
+	# clf = MLPClassifier(
+	# 	hidden_layer_sizes = (4, ), 
+	# 	solver = 'sgd', 
+	# 	learning_rate = 'constant',
+	# 	learning_rate_init = .0001)
+
+	# clf = SGDClassifier()
+	# clf = MLPClassifier()
 	# clf = LinearDiscriminantAnalysis()
 	clf = QuadraticDiscriminantAnalysis()
 	# clf = svm.SVC()
 	# clf = svm.LinearSVC(dual = False, C = 100)
+	# clf = make_pipeline(StandardScaler(),SGDClassifier(max_iter=1000, tol=1e-3))
 
 	# gripList = ["motion-fist", "motion-open-palm"]  # import hand motions then slice
 	gripList = ["motion-fist", "motion-open-palm"]
@@ -133,12 +147,14 @@ if __name__ == "__main__":
 
 
 	print("Training!")
-	# for i in range()
 	# clf = trainClassifier(clf, trainingDWT, trainingLabels)
+
 	clf = trainClassifier(clf, decimatedTraining, trainingLabels)
+
 	print("Classifying!")
 
 	print(testingLabels)
+
 	# print(clf.predict(testingDWT))
 	# print(sum(clf.predict(testingDWT) == testingLabels)/len(testingLabels))
 
