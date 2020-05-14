@@ -8,7 +8,7 @@ def get_data_from_csv(data_path='./data/subject-0/motion-fist/trial-1.csv'):
     data_path(str) - Required: Where you want to store data
 
     @returns
-    raw_emg(np.Arr[np.Arr[Int]]) - 2D Array, w/ Dims NUM_SENSORS by Data
+    raw_emg(np.Arr[np.Arr[Int]]) - 2D Array w/ dimensions NUM_SENSORS x N
     """
     # print("Reading data from {}...".format(data_path))
     raw_emg = genfromtxt(data_path, delimiter=',')[2:, :]  # skips first 2 csv lines that are nonsense
@@ -19,8 +19,6 @@ def readFullData(grips, subjectNumber):
 	'''
 	subjectNumber -> subject number of trials to be used
 
-    TODO:
-    Add threshold logic
 	'''
 	gripLabels = []
 	rawData  = []
