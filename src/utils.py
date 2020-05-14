@@ -129,6 +129,7 @@ def create_decimation_level_map(sig, max_lvl, mode=''):
         }
     return decimation_map
 
+
 def create_sensor2dwt(sensor2data, mode='normal', decimation_level=4):
     """
     Creates a map `sensor2dwt` from sensors to the DWT output decimated at

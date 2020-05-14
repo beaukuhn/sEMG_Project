@@ -41,6 +41,22 @@ def s2dwt(raw_emg, level=LEVEL, mode='normal'):
 		s2dwt.extend(pure_coefs)
 	return s2dwt
 
+def decimation_arrays(s2d, mode='normal'):
+    """
+    Output = [cA04 cD04 cA03 cD03 ... cA14 cD24 ... cA44 cD4 ....]
+    Ex: cA04 -> 1st Sensor, 4th level of decimation
+    Ex: cD31 -> 4th Sensor, 1st level of decimation
+    """
+    output = []
+    for sensor in range(5):
+        for dec_level in range(LEVEL, -1, -1):
+            for type in ['a', 'd']:
+                if mode == 'normal':
+                    output.append(downcoef(type, s2d[sensor], WAVELET, level=dec_level))
+                elif mode == 'thresh':
+                    output.append(thresh(downcoef(type, s2d[sensor], WAVELET, level=dec_level)))
+    return output
+
 # def gather_parameters(key):
 #     subject_query = "What is the subject number?\n"
 #     motion_query = ("Which hand motion would like to process?\n" +
