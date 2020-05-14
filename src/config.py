@@ -23,4 +23,5 @@ RECORDING_DURATION = 5  # Data recording length in seconds
 WRITING_DURATION = 10  # Data writing length in seconds
 BAUD_RATE = 2000000   # Will test varying BAUD rates, though this should suffice
 INPUT_TIMEOUT = RECORDING_DURATION  # How long we wait to receive data b4 each iteration
-PORT = '/dev/cu.usbmodem14201' #'/dev/ttyACM0'  # Serial Device Port
+# PORT = '/dev/cu.usbmodem14201' #'/dev/ttyACM0'  # Serial Device Port
+PORT = '/dev/ttyACM0'

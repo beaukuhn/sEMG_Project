@@ -68,8 +68,8 @@ def prompt_dispatcher(connection, function_key):
         return True
 
     def start_new_trial():
-        ans = input("Start trial? [y/N]\n")
-        if ans != "y":
+        ans = input("Start trial? [Y/n]\n")
+        if ans == "n":
             return close_connection(connection)
         return True
 
@@ -123,28 +123,28 @@ def record_data(connection, path, hand_motion):
     parsed_data = parse_data(read_bytes)
     print("Total number of samples from this trial: {}".format(len(parsed_data)))
     print("Preparing file for write operation...")
-    write_data(parsed_data)
+    write_data(path, parsed_data)
     print("Data Collection Completed")
 
 def initialize_pipeline(connection):
     """
     Begins the data collection pipeline.
     """
-    gather_parameters = prompt_dispatcher('gather_parameters_func')
+    gather_parameters = prompt_dispatcher(connection, 'gather_parameters_func')
     subject_num = gather_parameters('What is the subject number?')
     motion_num = gather_parameters('What is the motion?')
     trial_num = gather_parameters('What is the trial number?')
     data_path = create_dirs(subject_num, HAND_MOTIONS[motion_num], trial_num)
-    if not prompt_dispatcher("Is this a valid path?")(data_path):
-        return:=
-    prompt_dispatcher("Prepare for data collection.")()
+    if not prompt_dispatcher(connection, "Is this a valid path?")(data_path):
+        return close_connection(connection)
+    prompt_dispatcher(connection, "Prepare for data collection.")()
     record_data(connection, data_path, HAND_MOTIONS[motion_num])
 
 def main():
-    arduino_connection = open_connection()
-    while prompt_dispatcher("Begin a new trial?")():
-        initialize_pipeline(arduino_connection)
-    close_connection(arduino_connection)
+    connection = open_connection()
+    while prompt_dispatcher(connection, "Begin a new trial?")():
+        initialize_pipeline(connection)
+    close_connection(connection)
 
 if __name__ == "__main__":
     main()
