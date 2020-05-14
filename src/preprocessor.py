@@ -48,12 +48,12 @@ def decimation_arrays(raw_emg, mode='normal'):
     Ex: cD31 -> 4th Sensor, 1st level of decimation
     """
     output = []
-    for dec_level in range(LEVEL, -1, -1):
+    for dec_level in range(LEVEL, 0, -1):
         for type in ['a', 'd']:
             if mode == 'normal':
-                output.append(downcoef(type, raw_emg, WAVELET, level=dec_level))
+                output.extend(downcoef(type, raw_emg, WAVELET, level=dec_level))
             elif mode == 'thresh':
-                output.append(thresh(downcoef(type, raw_emg, WAVELET, level=dec_level)))
+                output.extend(thresh(downcoef(type, raw_emg, WAVELET, level=dec_level)))
     return output
 
 # def gather_parameters(key):
