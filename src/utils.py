@@ -43,6 +43,7 @@ def path_exists(path):
     """
     return os.path.exists(path)
 
+
 def create_dirs(subject_suffix, motion_suffix, trial_suffix):
     """
     Creates subject and motion directories

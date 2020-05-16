@@ -5,6 +5,7 @@ collector.py
 Drives data collection of sEMG data
 """
 import serial
+import queue
 import time
 import datetime
 import csv
@@ -19,7 +20,7 @@ from config import (
 )
 
 def open_connection(port=PORT, baud=BAUD_RATE, timeout=INPUT_TIMEOUT):
-    connection = serial.Serial(PORT, BAUD_RATE, timeout=INPUT_TIMEOUT)
+    connection = serial.Serial(port, baud, timeout=None)
     print("Arduino connection established: {}".format(connection.is_open))
     return connection
 
@@ -81,17 +82,19 @@ def prompt_dispatcher(connection, function_key):
     }
     return function_dispatcher[function_key]
 
-def parse_data(bytes):
-    parsed_data = [int(x) for x in bytes.split()]
-    headers = ["Sensor" + str(num) for num in range(5)]
-    rows = [ headers ]  # 2D Array that will contain data from each sensor
-    curr_row = []
-    for i in range(len(parsed_data)):
-        if i % 5 == 0:
-            rows.append(curr_row)
-            curr_row = []
-        curr_row.append(parsed_data[i])
-    return rows
+# def parse_data(bytes):
+#     parsed_data = [int(x) for x in bytes.split()]
+#     headers = ["Sensor" + str(num) for num in range(5)]
+#     rows = [ headers ]  # 2D Array that will contain data from each sensor
+#     curr_row = []
+#     for i in range(len(parsed_data)):
+#         if i % 5 == 0:
+#             rows.append(curr_row)
+#             curr_row = []
+#         curr_row.append(parsed_data[i])
+#     return rows
+
+
 
 def write_data(path, data):
     """
@@ -113,14 +116,24 @@ def record_data(connection, path, hand_motion):
     @param hand_motion(str) - the motion to be performed
     """
     print("Initializing Data Collection - Output File:{}".format(path))
-    connection.flushInput()
+    connection.reset_input_buffer()
+    connection.reset_output_buffer()
+    connection.flush()
     start_time = datetime.datetime.now()
     end_time = start_time + datetime.timedelta(seconds=RECORDING_DURATION)
+    buf = []
     read_bytes = b''
     print("Data collection started!\nDuration - {} seconds".format(RECORDING_DURATION))
+
     while datetime.datetime.now() < end_time:
-        read_bytes += connection.read(100000000)
-    parsed_data = parse_data(read_bytes)
+        buf.append(connection.readline())
+        # buf.append(connection.read(30))
+    print(buf)
+    parsed_data = [x.split(str.encode(',')) for x in read_bytes.join(buf).split()]
+    # print(parsed_data)
+    # read_bytes = [x.split(str.encode(',')) for x in buf]
+    # print(read_bytes)
+    # parsed_data = parse_data(read_bytes)
     print("Total number of samples from this trial: {}".format(len(parsed_data)))
     print("Preparing file for write operation...")
     write_data(path, parsed_data)
