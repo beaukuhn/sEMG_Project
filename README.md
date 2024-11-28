@@ -30,7 +30,7 @@ A system to capture muscle activation signals (sEMG) and classify hand gestures 
    - Model predicts gestures based on live sEMG input.
 
 ## Tech Stack
-- **Hardware**: Custom sEMG sensors, Arduino.
+- **Hardware**: sEMG sensors, Arduino.
 - **Software**: Python, `numpy`, `scikit-learn`, `tensorflow`.
 - **Tools**: Signal processing with SciPy, visualization with Matplotlib.
 
